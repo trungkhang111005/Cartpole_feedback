@@ -40,7 +40,7 @@ THRESH_THETA = 8
 K_BASE_THETA_DOT = 3.17012501085436
 K_MAX_THETA_DOT = 3.17012501085436
 THRESH_THETA_DOT = 25.0
-K_X = -4.99999999999969
+K_X = 4.99999999999969
 K_V = 1.02000079658471
 
 X_MID_POINT = 0.349
@@ -182,12 +182,12 @@ def control_thread(shared, lock, stop_event):
 
 			#if (abs(theta) < 1 and abs(theta_dot) < 2.0) or abs(theta) > 30:
 			#	torque = 0.0
-			if abs(theta) > 10:
-				CHA_state = 0
-				torque = 0.0
+			if abs(theta) > 12:
+				CHA_state = 1
+				torque = -(k_theta * 0 + k_theta_dot * 0 + k_x * x[2])
 			else:
 				CHA_state = 1
-				torque = -(k_theta * x[0] + k_theta_dot * x[1] + k_x * x[2])
+				torque = -(k_theta * x[0] + k_theta_dot * x[1] + 0.5 * x[2])
 			if CHA_state != last_CHA_state:
 				lgpio.gpio_write(gpio_handle, A_CHANNEL, CHA_state)
 				last_CHA_state = CHA_state
