@@ -40,7 +40,7 @@ THRESH_THETA = 8
 K_BASE_THETA_DOT = 3.17012501085436
 K_MAX_THETA_DOT = 3.17012501085436
 THRESH_THETA_DOT = 25.0
-K_X = 4.99999999999969
+K_X = -4.99999999999969
 K_V = 1.02000079658471
 
 X_MID_POINT = 0.349
@@ -131,7 +131,7 @@ class UltrasonicSensor:
 
 		duration = end - start
 		distance = (343.0 * duration) / 2
-		return distance - self.midpoint
+		return -distance + self.midpoint
 
 def sonic_thread(sensor, shared, lock, stop_event):
 	while not stop_event.is_set():
