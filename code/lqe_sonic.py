@@ -184,10 +184,10 @@ def control_thread(shared, lock, stop_event):
 			#	torque = 0.0
 			if abs(theta) > 12:
 				CHA_state = 1
-				torque = -(k_theta * 0 + k_theta_dot * 0 + k_x * x[2])
+				torque = -(k_theta * 0 + k_theta_dot * 0 + 0.3 * x[2])
 			else:
 				CHA_state = 1
-				torque = -(k_theta * x[0] + k_theta_dot * x[1] + 0.5 * x[2])
+				torque = -(k_theta * x[0] + k_theta_dot * x[1] + k_x * x[2])
 			if CHA_state != last_CHA_state:
 				lgpio.gpio_write(gpio_handle, A_CHANNEL, CHA_state)
 				last_CHA_state = CHA_state
