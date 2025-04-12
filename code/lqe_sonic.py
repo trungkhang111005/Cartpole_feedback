@@ -34,13 +34,14 @@ A_CHANNEL = 6
 ECHO = 14
 TRIG = 15
 # Gain scheduling constants
-K_BASE_THETA = 5.8392
-K_MAX_THETA = 5.8392
+K_BASE_THETA = 10.1611955508529
+K_MAX_THETA = 10.1611955508529
 THRESH_THETA = 8
-K_BASE_THETA_DOT = 1.4885
-K_MAX_THETA_DOT = 1.4885
+K_BASE_THETA_DOT = 3.17012501085436
+K_MAX_THETA_DOT = 3.17012501085436
 THRESH_THETA_DOT = 25.0
-K_V = -0.4472
+K_X = -4.99999999999969
+K_V = 1.02000079658471
 
 X_MID_POINT = 0.349
 # -------------------------------
@@ -172,11 +173,12 @@ def control_thread(shared, lock, stop_event):
 			with lock:
 				theta = shared['angle']
 				theta_dot = shared['ang_vel']
+				x_cart = shared['x_cart']
 
 			k_theta = scaled_gain(theta, K_BASE_THETA, K_MAX_THETA, THRESH_THETA)
 			k_theta_dot = scaled_gain(theta_dot, K_BASE_THETA_DOT, K_MAX_THETA_DOT, THRESH_THETA_DOT)
-
-			x = [math.radians(theta), math.radians(theta_dot), 0.0]
+			k_x = K_X
+			x = [math.radians(theta), math.radians(theta_dot), x_cart]
 
 			#if (abs(theta) < 1 and abs(theta_dot) < 2.0) or abs(theta) > 30:
 			#	torque = 0.0
@@ -185,7 +187,7 @@ def control_thread(shared, lock, stop_event):
 				torque = 0.0
 			else:
 				CHA_state = 1
-				torque = -(k_theta * x[0] + k_theta_dot * x[1] + K_V * x[2])
+				torque = -(k_theta * x[0] + k_theta_dot * x[1] + k_x * x[2])
 			if CHA_state != last_CHA_state:
 				lgpio.gpio_write(gpio_handle, A_CHANNEL, CHA_state)
 				last_CHA_state = CHA_state
